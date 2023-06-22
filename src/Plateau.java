@@ -12,8 +12,4 @@ public class Plateau {
     public int getyUpperRight(){
         return this.yUpperRight;
     }
-    public void setxyUR(int xUR,int yUR) {
-        this.xUpperRight = xUR;
-        this.yUpperRight = yUR;
-    }
 }
