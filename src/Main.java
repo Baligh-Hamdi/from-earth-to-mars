@@ -15,7 +15,7 @@ public class Main {
         int i=0;
         int rouversCounter=0;
         while (myReader.hasNextLine()) {
-            //when i==0 we can go to the next line because plateau is already set in readFile() method.
+            //when i==0 we can go to the next line because plateau is already set in openFile() method.
             if(i==0) myReader.nextLine();
             else{
                 String data = myReader.nextLine();
