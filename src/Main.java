@@ -64,7 +64,7 @@ public class Main {
                         }
                     }
                     else if(Direction.N.equals(r.getDirection())) {
-                        if((r.getY()+1)<=plateau.getxUpperRightR())  r.setY(r.getY()+1);
+                        if((r.getY()+1)<=plateau.getyUpperRight())  r.setY(r.getY()+1);
                         else {
                             throw new RuntimeException(r.getName()+" can't be out of Plateau. Please check the input file !");
                         }
