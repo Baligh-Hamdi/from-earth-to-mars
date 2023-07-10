@@ -41,8 +41,6 @@ public class Main {
 
     }
 
-
-
     /*
      * Check if file content is valid or not and return the file if its content respects the rules
      */
