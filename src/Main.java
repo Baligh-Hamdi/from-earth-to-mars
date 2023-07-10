@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    private static Plateau plateau;
+    //private static Plateau plateau;
 
     public static void main(String[] args) throws FileNotFoundException {
         Scanner myReader;
-        if(args.length>0) myReader = new Scanner(openFile(args[0]));
+        List<Object> l=openFile(args[0]);
+        if(args.length>0) myReader = new Scanner((File)l.get(0));
         else throw new RuntimeException("Please enter the input file name");
         List<Rover> rovers=new ArrayList<>();
         int i=0;
@@ -20,90 +21,34 @@ public class Main {
             else{
                 String data = myReader.nextLine();
                 String[] tab=data.split(" ");
+                Plateau pl = (Plateau)l.get(1);
                 if((i%2)!=0){
                     int x = Integer.valueOf(tab[0]);
                     int y = Integer.valueOf(tab[1]);
                     Direction direction = Direction.valueOf(tab[2]);
-                    rovers.add(new Rover(x,y, direction));
+                    pl.getRoversList().add(new Rover(x,y, direction));
                     rouversCounter++;
-                    rovers.get(rovers.size()-1).setName("Rover "+rouversCounter);
+                    pl.getRoversList().get(pl.getRoversList().size()-1).setName("Rover "+rouversCounter);
                 }
                 else{
-                    rovers.get(rovers.size()-1).setMovementToDo(data);
+                    pl.getRoversList().get(pl.getRoversList().size()-1).setMovementToDo(data);
+                    Rover lastRoverAdded = pl.getRoversList().get(pl.getRoversList().size()-1);
+                    lastRoverAdded.move(pl);
+                    System.out.println(lastRoverAdded.getX()+" "+lastRoverAdded.getY()+" "+lastRoverAdded.getDirection());
                 }
             }
             i++;
         }
         myReader.close();
-        rovers.stream().forEach(element-> {
-                updateRoverPositionAndDirection(element);
-                System.out.println(element.getX()+" "+element.getY()+" "+element.getDirection());
-        });
 
     }
 
-    /*
-    * Update a rover position and direction
-    */
-    public static void updateRoverPositionAndDirection(Rover r) throws RuntimeException {
-            char[] orders = r.getMovementToDo().toCharArray();
-            for(char order : orders){
-                if(order==Action.Move.getValeur()){
-                    //for each rover before updating its position we must check if it will still exist in the plateau or not
-                    if(Direction.W.equals(r.getDirection())) {
-                        // Here O is the x of the lower-left point of the plateau
-                        if((r.getX()-1)>=0) r.setX(r.getX()-1);
-                        else {
-                            throw new RuntimeException(r.getName()+" can't be out of Plateau. Please check the input file !");
-                        }
-                    }
-                    else if(Direction.E.equals(r.getDirection())) {
-                        if((r.getX()+1)<=plateau.getxUpperRightR())  r.setX(r.getX()+1);
-                        else {
-                            throw new RuntimeException(r.getName()+" can't be out of Plateau. Please check the input file !");
-                        }
-                    }
-                    else if(Direction.N.equals(r.getDirection())) {
-                        if((r.getY()+1)<=plateau.getyUpperRight())  r.setY(r.getY()+1);
-                        else {
-                            throw new RuntimeException(r.getName()+" can't be out of Plateau. Please check the input file !");
-                        }
 
-                    }
-                    else if(Direction.S.equals(r.getDirection())){
-                        // Here O is the y of the lower-left point of the plateau
-                        if((r.getY()-1)>=0)  r.setY(r.getY()-1);
-                        else {
-                            throw new RuntimeException(r.getName()+" can't be out of Plateau. Please check the input file !");
-                        }
-                    }
-                }
-                else{
-                    //update rover direction
-                    if(Direction.N.equals(r.getDirection())){
-                        if(order==Action.Left.getValeur()) r.setDirection(Direction.W);
-                        else if(order==Action.Right.getValeur()) r.setDirection(Direction.E);
-                    }
-                    else if(Direction.S.equals(r.getDirection())){
-                        if(order==Action.Left.getValeur()) r.setDirection(Direction.E);
-                        else if(order==Action.Right.getValeur()) r.setDirection(Direction.W);
-                    }
-                    else if(Direction.E.equals(r.getDirection())){
-                        if(order==Action.Left.getValeur()) r.setDirection(Direction.N);
-                        else if(order==Action.Right.getValeur()) r.setDirection(Direction.S);
-                    }
-                    else if(Direction.W.equals(r.getDirection())){
-                        if(order==Action.Left.getValeur()) r.setDirection(Direction.S);
-                        else if(order==Action.Right.getValeur()) r.setDirection(Direction.N);
-                    }
-                }
-            }
-    }
 
     /*
      * Check if file content is valid or not and return the file if its content respects the rules
      */
-    public static File openFile(String fileName) throws FileNotFoundException {
+    public static List<Object> openFile(String fileName) throws FileNotFoundException {
         String inputFileName;
         if(fileName==null || (fileName!=null && fileName.length()==0)) throw new RuntimeException("Please enter the input file name");
         else inputFileName=fileName;
@@ -112,6 +57,7 @@ public class Main {
             throw new RuntimeException("The input file is empty !");
         }
         int i=0;
+        Plateau plateau=new Plateau(0,0);
         Scanner myReader = new Scanner(myObj);
         while (myReader.hasNextLine()) {
             String data = myReader.nextLine();
@@ -157,6 +103,9 @@ public class Main {
         if(myObj.length()>0 && i==1){
             throw new RuntimeException("No rovers found !");
         }
-        return myObj;
+        List<Object> l= new ArrayList<>();
+        l.add(myObj);
+        l.add(plateau);
+        return l;
     }
 }
