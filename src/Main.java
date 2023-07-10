@@ -5,14 +5,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    //private static Plateau plateau;
 
     public static void main(String[] args) throws FileNotFoundException {
         Scanner myReader;
         List<Object> l=openFile(args[0]);
         if(args.length>0) myReader = new Scanner((File)l.get(0));
         else throw new RuntimeException("Please enter the input file name");
-        List<Rover> rovers=new ArrayList<>();
         int i=0;
         int rouversCounter=0;
         while (myReader.hasNextLine()) {
